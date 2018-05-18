@@ -31,15 +31,7 @@ class Form extends Model
     /**
      * @var array
      */
-    protected $fillable = ['area_id', 'thread_id', 'name_form_id'];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function area()
-    {
-        return $this->belongsTo('App\Area');
-    }
+    protected $fillable = ['thread_id', 'name_form_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

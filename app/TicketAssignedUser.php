@@ -31,12 +31,11 @@ class TicketAssignedUser extends Model
      * 
      * @var string
      */
-    protected $primaryKey = 'tickets_id';
 
     /**
      * @var array
      */
-    protected $fillable = ['assigned_by_id', 'assigned_to_id'];
+    protected $fillable = ['assigned_by_id', 'assigned_to_id', 'tickets_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

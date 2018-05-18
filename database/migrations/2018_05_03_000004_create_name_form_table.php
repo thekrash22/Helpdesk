@@ -25,8 +25,13 @@ class CreateNameFormTable extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name', 45);
+            $table->integer('area_id')->unsigned();
             $table->softDeletes();
             $table->timestamps();
+            
+            $table->foreign('area_id')->references('id')->on('area')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

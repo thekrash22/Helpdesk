@@ -29,12 +29,11 @@ class TicketSubject extends Model
      * 
      * @var string
      */
-    protected $primaryKey = 'subject_id';
 
     /**
      * @var array
      */
-    protected $fillable = ['tickets_id'];
+    protected $fillable = ['tickets_id','subject_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -22,12 +22,12 @@ class UsersInvolvedTicket extends Model
      * 
      * @var string
      */
-    protected $primaryKey = 'users_id';
+   
 
     /**
      * @var array
      */
-    protected $fillable = ['tickets_id'];
+    protected $fillable = ['users_id', 'tickets_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

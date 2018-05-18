@@ -35,9 +35,9 @@ class Area extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function forms()
+    public function name_form()
     {
-        return $this->hasMany('App\Form');
+        return $this->hasMany('App\NameForm');
     }
 
     /**

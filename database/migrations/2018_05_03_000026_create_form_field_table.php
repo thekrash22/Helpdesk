@@ -26,7 +26,7 @@ class CreateFormFieldTable extends Migration
             $table->increments('id');
             $table->integer('form_id')->unsigned();
             $table->integer('field_id')->unsigned();
-            $table->text('data');
+            $table->string('data');
 
             //$table->index(["field_id"], 'fk_form_has_field_field1_idx');
 

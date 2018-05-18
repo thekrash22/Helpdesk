@@ -27,7 +27,15 @@ class NameForm extends Model
     /**
      * @var array
      */
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'area_id'];
+    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function area()
+    {
+        return $this->belongsTo('App\Area');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

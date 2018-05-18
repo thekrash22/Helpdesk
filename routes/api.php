@@ -42,7 +42,12 @@ Route::group(['middleware' => 'cors'],function(){
     Route::resource('tracking', 'TrackingController');
     Route::resource('userInvolved', 'UserInvolvedTicketController');
     Route::resource('verb', 'VerbController');
+    Route::resource('user', 'UserController');
     
+    
+    Route::get('dashboard', 'TicketController@dashboard');
+    Route::get('ticketByUser', 'TicketController@ticketByUser');
+    Route::get('ticketExpired', 'TicketController@ticketExpired');
    
     
 });

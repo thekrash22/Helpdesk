@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Role;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Hash;
 
 class UserController extends Controller
 {
@@ -27,7 +29,23 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
+        
+        $pass=Hash::make($request->password);
+        $area_id=$request->area['id'];
+        $user=User::create(['name'=>$request->name,
+                      'email'=>$request->email,
+                      'password'=>$pass,
+                      'username'=>$request->username,
+                      'area_id'=>$area_id,
+                      'isActive'=> $request->isActive
+                    ]);
+        
+        
+        $role = Role::where('id', '=', $request->role)->first();
+        $user->attachRole($role);
+        return response(['Mensaje'=>'Creado Correctamente']);
+        
     }
 
     /**

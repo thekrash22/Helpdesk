@@ -34,7 +34,7 @@ class Ticket extends Model
     /**
      * @var array
      */
-    protected $fillable = ['priority_id', 'status_id', 'person_id', 'settled', 'description', 'folios', 'days'];
+    protected $fillable = ['priority_id', 'status_id', 'person_id', 'settled', 'description', 'folios', 'expiration'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -65,7 +65,7 @@ class Ticket extends Model
      */
     public function files()
     {
-        return $this->hasMany('App\File', 'tickets_id');
+        return $this->hasMany('App\Files', 'tickets_id');
     }
 
     /**
@@ -87,10 +87,16 @@ class Ticket extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function ticketsAssignedUser()
+    public function ticketsAssignedUserBy()
     {
-        return $this->hasOne('App\TicketsAssignedUser', 'tickets_id');
+        return $this->belongsToMany('App\User', 'tickets_assigned_users', 'tickets_id', 'assigned_by_id')->latest();
     }
+    
+    public function ticketsAssignedUserTo()
+    {
+        return $this->belongsToMany('App\User', 'tickets_assigned_users', 'tickets_id', 'assigned_to_id')->latest();
+    }
+    
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -115,4 +121,6 @@ class Ticket extends Model
     {
         return $this->belongsToMany('App\User', 'users_involved_tickets', 'tickets_id', 'users_id');
     }
+    
+   
 }
