@@ -96,7 +96,7 @@ class ThreadController extends Controller
              $files = $request->file('files');
              foreach ($files as $file) {
                   $fileName = $file->getClientOriginalName();
-                  $ruta='docs/thread/'.$thread->id.'/'.$thread;
+                  $ruta='docs/thread/'.$thread->id.'/'.$fileName;
                   Files::create(['url'=>$ruta,
                                 'thread_id'=>$thread->id,
                                 'name'=>$fileName

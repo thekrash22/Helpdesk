@@ -48,6 +48,13 @@ Route::group(['middleware' => 'cors'],function(){
     Route::get('dashboard', 'TicketController@dashboard');
     Route::get('ticketByUser', 'TicketController@ticketByUser');
     Route::get('ticketExpired', 'TicketController@ticketExpired');
+    Route::get('ticketByStatus/{id}', 'TicketController@ticketByStatus');
    
+    Route::post('ticketByFilters', 'TicketController@ticketByFilters');
+    Route::post('myTicketsByFilters', 'TicketController@myTicketsByFilters');
+    Route::post('ticketReasinged', 'TicketController@ticketReasinged');
+    Route::post('consolidated', 'TicketController@consolidated');
+    Route::post('actuationsTickets', 'TicketController@actuationsTickets');
+    Route::post('actuationsGeneral', 'TicketController@actuationsGeneral');
     
 });
