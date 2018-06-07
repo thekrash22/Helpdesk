@@ -203,6 +203,57 @@ class TicketController extends Controller
         return response($data);
     }
     
+    public function myDashboard(){
+        //get day now 
+        $user=User::resolveId();
+        $hoy = Carbon::now();
+        $allMonth=Ticket::whereMonth('created_at',$hoy->month)
+                      ->whereYear('created_at', $hoy->year)
+                      ->count();
+        
+        //get tickets by status
+        $open=Ticket::join('tickets_assigned_users', 'tickets.id', '=', 'tickets_id' )
+                     ->join('users', 'users.id', '=', 'assigned_to_id')
+                     ->where('users.id', '=', $user)
+                     ->where('status_id', '=', 1)
+                     ->count();
+                      
+        $assigned=Ticket::join('tickets_assigned_users', 'tickets.id', '=', 'tickets_id' )
+                        ->join('users', 'users.id', '=', 'assigned_to_id')
+                        ->where('users.id', '=', $user)
+                        ->where('status_id', '=', 2)
+                        ->count();
+                        
+        $process=Ticket::join('tickets_assigned_users', 'tickets.id', '=', 'tickets_id' )
+                        ->join('users', 'users.id', '=', 'assigned_to_id')
+                        ->where('users.id', '=', $user)
+                        ->where('status_id', '=', 3)
+                        ->count();
+                        
+        $solved=Ticket::join('tickets_assigned_users', 'tickets.id', '=', 'tickets_id' )
+                      ->join('users', 'users.id', '=', 'assigned_to_id')
+                      ->where('users.id', '=', $user)
+                      ->where('status_id', '=', 4)
+                      ->count();
+                      
+        $close=Ticket::join('tickets_assigned_users', 'tickets.id', '=', 'tickets_id' )
+                     ->join('users', 'users.id', '=', 'assigned_to_id')
+                     ->where('users.id', '=', $user)
+                     ->where('status_id', '=', 5)
+                     ->count();
+        
+        //data to response for web service
+        $data=[ 'allmonth'=>$allMonth,
+                'open'=>$open,
+                'assigned'=>$assigned,
+                'process'=>$process,
+                'solved'=>$solved,
+                'close'=>$close
+                ];
+                              
+        return response($data);
+    }
+    
     public function ticketByUser(){
         //get id user by token in header request
         $user=User::resolveId();
@@ -377,5 +428,11 @@ class TicketController extends Controller
         $ticket=DB::select('Call actuationsGeneral(?, ?, ?)', array( $users_involved, $dateIni, $dateEnd ));
         return response($ticket);
     }
+    
+    public function ticketNoAssigned(){
+        
+    }
+    
+   
     
 }

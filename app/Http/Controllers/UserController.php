@@ -8,6 +8,7 @@ use App\Role;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Hash;
+use App\Users;
 
 class UserController extends Controller
 {
@@ -18,7 +19,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $users=Users::paginate(15);
+        return response($users);
     }
 
     /**
@@ -33,7 +35,7 @@ class UserController extends Controller
         
         $pass=Hash::make($request->password);
         $area_id=$request->area['id'];
-        $user=User::create(['name'=>$request->name,
+        $user=Users::create(['name'=>$request->name,
                       'email'=>$request->email,
                       'password'=>$pass,
                       'username'=>$request->username,
@@ -56,7 +58,10 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $user=User::find($id);
+        return response()->json($user);
+
+        
     }
 
     /**
@@ -68,7 +73,13 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user=User::find($id);
+        
+        $input = $request->all();
+        if(isset($input['password'])){$input['password'] = Hash::make($input['password']);}
+    	$user->fill($input);
+    	$user->save();
+		return response(["mensaje"=>"Actualizado correctamente"]);
     }
 
     /**
@@ -79,7 +90,10 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user=User::find($id);
+        $user->delete();
+
+        return response(["mensaje"=>"Eliminado correctamente"]);
     }
     
     public function auth(Request $request)
@@ -96,10 +110,10 @@ class UserController extends Controller
             return response()->json(['error' => 'Algo esta mal'],500);
         }
         
-        $userObj = JWTAuth::toUser($token);
+       // $userObj = JWTAuth::toUser($token);
         
-        $user = User::where('username', '=', $userObj->username)->get();
-        return response()->json(compact('token','user'));
+    //    $user = User::where('username', '=', $userObj->username)->get();
+        return response()->json(compact('token'));
         
     }
 }

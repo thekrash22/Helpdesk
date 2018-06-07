@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use JWTAuth;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Iatstuti\Database\Support\CascadeSoftDeletes;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use OwenIt\Auditing\Contracts\UserResolver;
@@ -31,13 +33,18 @@ use OwenIt\Auditing\Contracts\UserResolver;
  * @property Tracking[] $trackings
  * @property UsersInvolvedTicket[] $usersInvolvedTickets
  */
-class Users extends Model implements AuditableContract, UserResolver
+class Users extends Model implements AuditableContract
 {
     /**
      * @var array
      */
+    use SoftDeletes, CascadeSoftDeletes, Auditable;
+    protected $cascadeDeletes =['area', 'notifications_received', 'usnotifications_senderer', 'roles', 'threads', 'ticketsAssignedUsersBy', 'ticketsAssignedUsersTo', 'trackings_target', 'trackings', 'usersInvolvedTickets'];
+    protected $dates = ['deleted_at'];
+    
     protected $fillable = ['area_id', 'name', 'username', 'isActive', 'email', 'password', 'avatar', 'remember_token', 'deleted_at', 'created_at', 'updated_at'];
-
+    
+    protected $hidden = [ 'password', 'remember_token'];
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

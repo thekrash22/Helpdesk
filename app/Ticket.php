@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 /**
  * @property int $id
@@ -26,9 +28,9 @@ use Iatstuti\Database\Support\CascadeSoftDeletes;
  * @property Tracking[] $trackings
  * @property User[] $users
  */
-class Ticket extends Model
+class Ticket extends Model implements AuditableContract
 {
-    use SoftDeletes, CascadeSoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes, Auditable;
     protected $cascadeDeletes =['person', 'priority', 'priority', 'status', 'files', 'notifications', 'threads', 'ticketsAssignedUser', 'subjects', 'trackings', 'users'];
     protected $dates = ['deleted_at'];
     /**

@@ -67,6 +67,7 @@ class ComposerStaticInit066041878fe11ab0793c8fdd8bd0f171
         ),
         'P' => 
         array (
+            'Pusher\\' => 7,
             'Psy\\' => 4,
             'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
@@ -234,6 +235,10 @@ class ComposerStaticInit066041878fe11ab0793c8fdd8bd0f171
         'Ramsey\\Uuid\\' => 
         array (
             0 => __DIR__ . '/..' . '/ramsey/uuid/src',
+        ),
+        'Pusher\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/pusher/pusher-php-server/src',
         ),
         'Psy\\' => 
         array (
@@ -455,6 +460,7 @@ class ComposerStaticInit066041878fe11ab0793c8fdd8bd0f171
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\NameForm' => __DIR__ . '/../..' . '/app/NameForm.php',
         'App\\Notifications' => __DIR__ . '/../..' . '/app/Notifications.php',
+        'App\\Notifications\\NewNotification' => __DIR__ . '/../..' . '/app/Notifications/NewNotification.php',
         'App\\Permission' => __DIR__ . '/../..' . '/app/Permission.php',
         'App\\Person' => __DIR__ . '/../..' . '/app/Person.php',
         'App\\Priority' => __DIR__ . '/../..' . '/app/Priority.php',
@@ -473,6 +479,7 @@ class ComposerStaticInit066041878fe11ab0793c8fdd8bd0f171
         'App\\Tracking' => __DIR__ . '/../..' . '/app/Tracking.php',
         'App\\Type' => __DIR__ . '/../..' . '/app/Type.php',
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
+        'App\\Users' => __DIR__ . '/../..' . '/app/Users.php',
         'App\\UsersInvolvedTicket' => __DIR__ . '/../..' . '/app/UsersInvolvedTicket.php',
         'App\\Verb' => __DIR__ . '/../..' . '/app/Verb.php',
         'Asm89\\Stack\\Cors' => __DIR__ . '/..' . '/asm89/stack-cors/src/Asm89/Stack/Cors.php',
@@ -3469,6 +3476,9 @@ class ComposerStaticInit066041878fe11ab0793c8fdd8bd0f171
         'Psy\\VersionUpdater\\GitHubChecker' => __DIR__ . '/..' . '/psy/psysh/src/VersionUpdater/GitHubChecker.php',
         'Psy\\VersionUpdater\\IntervalChecker' => __DIR__ . '/..' . '/psy/psysh/src/VersionUpdater/IntervalChecker.php',
         'Psy\\VersionUpdater\\NoopChecker' => __DIR__ . '/..' . '/psy/psysh/src/VersionUpdater/NoopChecker.php',
+        'Pusher\\Pusher' => __DIR__ . '/..' . '/pusher/pusher-php-server/src/Pusher.php',
+        'Pusher\\PusherException' => __DIR__ . '/..' . '/pusher/pusher-php-server/src/PusherException.php',
+        'Pusher\\PusherInstance' => __DIR__ . '/..' . '/pusher/pusher-php-server/src/PusherInstance.php',
         'Ramsey\\Uuid\\BinaryUtils' => __DIR__ . '/..' . '/ramsey/uuid/src/BinaryUtils.php',
         'Ramsey\\Uuid\\Builder\\DefaultUuidBuilder' => __DIR__ . '/..' . '/ramsey/uuid/src/Builder/DefaultUuidBuilder.php',
         'Ramsey\\Uuid\\Builder\\DegradedUuidBuilder' => __DIR__ . '/..' . '/ramsey/uuid/src/Builder/DegradedUuidBuilder.php',
