@@ -119,6 +119,12 @@ class TicketController extends Controller
                                          'tickets_id'=>$ticket->id
                                         ]);
             
+        }else{
+            //assigned to admin to create
+            TicketAssignedUser::create(['assigned_by_id'=>$user_assigned_by,
+                                        'assigned_to_id'=>47,
+                                        'tickets_id'=>$ticket->id
+                                        ]);
         }
         
         
@@ -429,10 +435,6 @@ class TicketController extends Controller
         return response($ticket);
     }
     
-    public function ticketNoAssigned(){
-        
-    }
     
-   
     
 }

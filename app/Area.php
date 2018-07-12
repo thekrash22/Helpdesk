@@ -21,7 +21,7 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 class Area extends Model implements AuditableContract
 {
     use SoftDeletes, CascadeSoftDeletes, Auditable;
-    protected $cascadeDeletes =['forms', 'notifications', 'notifications_sender', 'subjects'];
+    protected $cascadeDeletes =['name_form', 'notifications', 'notifications_sender', 'subjects'];
     protected $dates = ['deleted_at'];
     /**
      * The table associated with the extends Model.
@@ -48,7 +48,7 @@ class Area extends Model implements AuditableContract
      */
     public function notifications()
     {
-        return $this->hasMany('App\Notification');
+        return $this->hasMany('App\Notifications');
     }
 
     /**
@@ -56,7 +56,7 @@ class Area extends Model implements AuditableContract
      */
     public function notifications_sender()
     {
-        return $this->hasMany('App\Notification', 'area_sender_id');
+        return $this->hasMany('App\Notifications', 'area_sender_id');
     }
 
     /**
@@ -66,4 +66,5 @@ class Area extends Model implements AuditableContract
     {
         return $this->hasMany('App\Subject');
     }
+    
 }

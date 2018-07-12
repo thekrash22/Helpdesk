@@ -58,7 +58,7 @@ class Users extends Model implements AuditableContract
      */
     public function notifications_received()
     {
-        return $this->hasMany('App\Notification', 'received_users_id');
+        return $this->hasMany('App\Notifications', 'received_users_id');
     }
 
     /**
@@ -66,7 +66,7 @@ class Users extends Model implements AuditableContract
      */
     public function notifications_sender()
     {
-        return $this->hasMany('App\Notification', 'sender_users_id');
+        return $this->hasMany('App\Notifications', 'sender_users_id');
     }
 
     /**

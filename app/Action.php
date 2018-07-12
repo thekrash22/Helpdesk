@@ -37,6 +37,6 @@ class Action extends Model implements AuditableContract
      */
     public function notifications()
     {
-        return $this->hasMany('App\Notification');
+        return $this->hasMany('App\Notifications');
     }
 }

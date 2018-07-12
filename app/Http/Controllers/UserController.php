@@ -110,10 +110,10 @@ class UserController extends Controller
             return response()->json(['error' => 'Algo esta mal'],500);
         }
         
-       // $userObj = JWTAuth::toUser($token);
+      $userObj = JWTAuth::toUser($token);
         
-    //    $user = User::where('username', '=', $userObj->username)->get();
-        return response()->json(compact('token'));
+      $user = User::where('username', '=', $userObj->username)->with('roles')->get();
+    return response()->json(compact('token', 'user'));
         
     }
 }

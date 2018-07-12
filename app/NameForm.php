@@ -17,7 +17,7 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 class NameForm extends Model implements AuditableContract
 {
     use SoftDeletes, CascadeSoftDeletes, Auditable;
-    protected $cascadeDeletes =['fields', 'forms'];
+    protected $cascadeDeletes =['fields', 'forms', 'area'];
     protected $dates = ['deleted_at'];
     /**
      * The table associated with the extends Model.

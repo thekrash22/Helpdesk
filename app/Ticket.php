@@ -75,7 +75,7 @@ class Ticket extends Model implements AuditableContract
      */
     public function notifications()
     {
-        return $this->hasMany('App\Notification', 'tickets_id');
+        return $this->hasMany('App\Notifications', 'tickets_id');
     }
 
     /**
