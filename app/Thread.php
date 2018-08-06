@@ -56,7 +56,7 @@ class Thread extends Model implements AuditableContract
      */
     public function files()
     {
-        return $this->hasMany('App\File');
+        return $this->hasMany('App\Files');
     }
 
     /**

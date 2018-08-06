@@ -18,6 +18,12 @@ class PersonController extends Controller
         $person=Person::paginate(15);
         return response($person);
     }
+    
+    public function all()
+    {
+        $person=Person::all();
+        return response($person);
+    }
 
 
     /**

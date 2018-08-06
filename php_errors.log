@@ -17,3 +17,4 @@
 [06-Jun-2018 16:37:35 America/Bogota] PHP Fatal error:  Interface 'App\AuditableContracts' not found in /home/ubuntu/workspace/api/app/User.php on line 13
 [06-Jun-2018 16:50:48 America/Bogota] PHP Fatal error:  Trait 'App\SoftDeletes' not found in /home/ubuntu/workspace/api/app/Users.php on line 39
 [06-Jun-2018 17:52:18 America/Bogota] PHP Fatal error:  Class 'App\Eloquent' not found in /home/ubuntu/workspace/api/app/User.php on line 13
+[19-Jul-2018 15:10:51 America/Bogota] PHP Fatal error:  Cannot use [] for reading in /home/ubuntu/workspace/api/app/Http/Controllers/TicketController.php on line 361

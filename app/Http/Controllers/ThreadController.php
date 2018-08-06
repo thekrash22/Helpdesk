@@ -82,13 +82,13 @@ class ThreadController extends Controller
         }
       
         //create relationship of form-fields
-
+    /*
         foreach($fields as $field){
            FormField::create(['form_id'=>$form->id, 
                               'field_id'=> $field['id'],
                               'data'=> $field['data']
                                 ]);
-        }
+        }*/
         
         //load file of thread 
         if(isset($request->files)){

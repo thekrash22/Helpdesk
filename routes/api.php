@@ -31,6 +31,8 @@ Route::group(['middleware' => 'cors'],function(){
         Route::resource('type', 'TypeController');//
         Route::resource('notification', 'NotificationController');
         Route::resource('verb', 'VerbController');//
+        Route::get('ticketsAll', 'TicketController@ticketsAll');
+        Route::post('updateSubjects','TicketController@updateSubjects');
         
         Route::get('area', ['middleware'=>['ability:readlist-area'],'uses'=>'AreaController@index']);
         Route::get('area/{area}', ['middleware'=>['ability:read-area'],'uses'=>'AreaController@show']);
@@ -63,6 +65,7 @@ Route::group(['middleware' => 'cors'],function(){
         Route::post('formField', ['middleware'=>['ability:create-form'],'uses'=>'FormFieldController@store']);
     
         Route::get('person', ['middleware'=>['ability:readlist-person'],'uses'=>'PersonController@index']);
+        Route::get('personAll', ['middleware'=>['ability:readlist-person'],'uses'=>'PersonController@all']);
         Route::get('person/{person}', ['middleware'=>['ability:read-person'],'uses'=>'PersonController@show']);
         Route::delete('person/{person}', ['middleware'=>['ability:delete-person'],'uses'=>'PersonController@destroy']);
         Route::put('person/{person}', ['middleware'=>['ability:update-person'],'uses'=>'PersonController@update']);
@@ -91,6 +94,7 @@ Route::group(['middleware' => 'cors'],function(){
         //Route::resource('userInvolved', 'UserInvolvedTicketController');
         
         Route::get('user', ['middleware'=>['ability:readlist-user'],'uses'=>'UserController@index']);
+        Route::get('userAll', ['middleware'=>['ability:readlist-user'],'uses'=>'UserController@all']);
         Route::get('user/{user}', ['middleware'=>['ability:read-user'],'uses'=>'UserController@show']);
         Route::delete('user/{user}', ['middleware'=>['ability:delete-user'],'uses'=>'UserController@destroy']);
         Route::put('user/{user}', ['middleware'=>['ability:update-user'],'uses'=>'UserController@update']);

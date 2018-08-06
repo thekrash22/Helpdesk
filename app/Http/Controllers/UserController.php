@@ -22,6 +22,12 @@ class UserController extends Controller
         $users=Users::paginate(15);
         return response($users);
     }
+    
+    public function all()
+    {
+        $users=Users::with('roles','area')->get();
+        return response($users);
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -58,7 +64,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user=User::find($id);
+        $user=Users::find($id);
         return response()->json($user);
 
         
@@ -112,7 +118,7 @@ class UserController extends Controller
         
       $userObj = JWTAuth::toUser($token);
         
-      $user = User::where('username', '=', $userObj->username)->with('roles')->get();
+    $user = Users::where('username', '=', $userObj->username)->with('roles', 'area')->get();
     return response()->json(compact('token', 'user'));
         
     }

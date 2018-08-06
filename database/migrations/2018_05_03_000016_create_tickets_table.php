@@ -30,7 +30,9 @@ class CreateTicketsTable extends Migration
             $table->integer('priority_id')->unsigned()->nullable();
             $table->integer('status_id')->unsigned();
             $table->integer('person_id')->unsigned();
+            $table->integer('linked_tikcket_id')->unsigned();
             $table->date('expiration');
+            
            // $table->integer('days')->default('15');
 
             //$table->index(["priority_id"], 'fk_tickets_priority1_idx');
@@ -53,6 +55,11 @@ class CreateTicketsTable extends Migration
             $table->foreign('person_id')->references('id')->on('person')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
+            
+            $table->foreign('linked_tikcket_id')->references('id')->on('tickets')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+                
             $table->softDeletes();
             $table->timestamps();
         });

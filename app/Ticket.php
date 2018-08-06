@@ -31,7 +31,7 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 class Ticket extends Model implements AuditableContract
 {
     use SoftDeletes, CascadeSoftDeletes, Auditable;
-    protected $cascadeDeletes =['person', 'priority', 'priority', 'status', 'files', 'notifications', 'threads', 'ticketsAssignedUser', 'subjects', 'trackings', 'users'];
+    protected $cascadeDeletes =['person', 'priority', 'priority', 'status', 'files', 'notifications', 'threads', 'ticketsAssignedUser', 'subjects', 'trackings', 'users', 'linked_tikcket_id'];
     protected $dates = ['deleted_at'];
     /**
      * @var array
@@ -91,12 +91,12 @@ class Ticket extends Model implements AuditableContract
      */
     public function ticketsAssignedUserBy()
     {
-        return $this->belongsToMany('App\User', 'tickets_assigned_users', 'tickets_id', 'assigned_by_id')->latest();
+        return $this->belongsToMany('App\Users', 'tickets_assigned_users', 'tickets_id', 'assigned_by_id')->latest();
     }
     
     public function ticketsAssignedUserTo()
     {
-        return $this->belongsToMany('App\User', 'tickets_assigned_users', 'tickets_id', 'assigned_to_id')->latest();
+        return $this->belongsToMany('App\Users', 'tickets_assigned_users', 'tickets_id', 'assigned_to_id')->latest();
     }
     
 
@@ -124,5 +124,10 @@ class Ticket extends Model implements AuditableContract
         return $this->belongsToMany('App\User', 'users_involved_tickets', 'tickets_id', 'users_id');
     }
     
+    
+    public function linkedTikcket()
+    {
+        return $this->belongsTo('App\Ticket', 'linked_tikcket_id');
+    }
    
 }

@@ -16,7 +16,8 @@ use App\UsersInvolvedTicket;
 use DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-
+use App\Person;
+use App\Status;
 
 class TicketController extends Controller
 {
@@ -41,6 +42,12 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {   
+        
+        $input=$request->all();
+        if(!$request->person_id){
+            $person = Person::create($request->all());
+            $input['person_id']=$person->id;
+        }
         //get date now
         $hoy = Carbon::now();
         $fecha = $hoy->format('Y-m-d');
@@ -52,7 +59,7 @@ class TicketController extends Controller
                             ->get();
         
         //all insert fields to db.tickets 
-        $input=$request->all();
+        
         //validation of settled ticket, if is first on this day, else count settled for each new ticket
         if(count($last_ticket)==0){
             $last_settled=$fecha[2].$fecha[3].$fecha[5].$fecha[6].$fecha[8].$fecha[9].'001';
@@ -151,7 +158,31 @@ class TicketController extends Controller
      */
     public function show($id)
     {   //get ticket by id
-        $ticket=Ticket::with('subjects', 'status', 'ticketsAssignedUserBy', 'ticketsAssignedUserTo', 'person', 'priority', 'files')->find($id);
+        $ticket=Ticket::with([
+                        'subjects', 
+                        'status', 
+                        'ticketsAssignedUserBy', 
+                        'ticketsAssignedUserTo'=> function($ticketsAssignedUserTo){
+                            $ticketsAssignedUserTo->with('area', 'roles')
+                            ->orderBy('created_at', 'asc')
+                            ->get();
+                        }, 
+                        'person', 
+                        'priority', 
+                        'files', 
+                        'linkedTikcket',
+                        'trackings',
+                        'threads'=>function($threads){
+                            $threads->with(['files','user',
+                                            'forms'=>function($forms){
+                                                $forms->with(['nameForm',
+                                                              'formFields'=>function($formFields){
+                                                              $formFields->with('field')->get();
+                                                            }])->get();
+                                            }])->get();
+                                        }])
+                        ->find($id);
+                        
         return response()->json($ticket);
     }
 
@@ -165,9 +196,36 @@ class TicketController extends Controller
      */
     public function update(Request $request, $id)
     {  //udate a ticket 
-       $ticket=Ticket::find($id);
-       $ticket->fill($request->all());
-       $ticket->save();
+        $ticket=Ticket::find($id);
+        $ticket->fill($request->all());
+        $ticket->save();
+       
+        $user=User::resolveId();
+        $user=User::find($user);
+        
+        
+        
+        if($request->CambiarEstado){
+            
+            if($request->status_id){
+                $status=Status::find($request->status_id);
+                $message= $user->name." cambio el estado del ticket a ".$status->name ;
+                $verb_id=7;
+            }else{
+                $message= $user->name." cambio el estado del ticket";
+                $verb_id=7;
+                
+            }
+        }else{
+           $message= $user->name." actualizó el ticket";
+           $verb_id=2;
+        }
+        
+        Tracking::create(['tickets_id'=>$ticket->id,
+                          'message'=>$message,
+                          'users_id'=>$user->id,
+                          'verb_id'=> $verb_id
+                        ]);
        return response(['mensaje'=>'Actualizado Correctamente']);
     }
 
@@ -294,7 +352,7 @@ class TicketController extends Controller
         
         return response($ticket);
     }
-    
+    //Todos
     public function ticketByFilters(Request $request){
         
         $subjects='';
@@ -324,14 +382,20 @@ class TicketController extends Controller
         $dateIni=$request->dateIni;   
         $dateEnd=$request->dateEnd;    
         $user_assigned=$request->user_assigned;    
-        $expiration=$request->expiration;    
-        
+        $expiration=$request->expiration;   
+        $tickets=[];
+
         //call to procedure on bd, this return values according by filters 
         $ticket=DB::select('Call searchByFilters(?, ?, ?, ?, ?, ?, ?, ?)', array($status_id, $subjects, $created_at, $users_involved, $dateIni, $dateEnd, $user_assigned, $expiration));
+        foreach($ticket as $tick){
+            $aux=Ticket::with('subjects', 'status', 'ticketsAssignedUserBy', 'ticketsAssignedUserTo', 'person')->find($tick->id);
+            $tickets[]=$aux;
+        }
+        
         //Object to parameter "page" on url
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         //convert tickets to collection
-        $collection = new Collection($ticket);
+        $collection = new Collection($tickets);
         //max tickets of page
         $perPage = 15;
         //create pagination 
@@ -344,7 +408,7 @@ class TicketController extends Controller
         
         return response($paginatedSearchResults);
     }
-    
+    //Tickets asignados (mios) 
     public function myTicketsByFilters(Request $request){
         
         $user_id=User::resolveId();
@@ -358,14 +422,24 @@ class TicketController extends Controller
         }
         //call to procedure on bd, this return values according by filters 
         $ticket=DB::select('Call myTicketsByFilters(?, ?, ?, ?, ?)', array($roles_id, $user_id, $month, $year, $user_assigned_by));
+        $tickets=[];
+        foreach($ticket as $tick){
+            $aux=Ticket::with('subjects', 'status', 'ticketsAssignedUserBy', 'ticketsAssignedUserTo', 'person')->find($tick->id);
+            $tickets[]=$aux;
+        }
+       
+       
+       
         //Object to parameter "page" on url
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         //convert tickets to collection
-        $collection = new Collection($ticket);
+        $collection = new Collection($tickets);
         //max tickets of page
         $perPage = 15;
         //create pagination 
         $currentPageSearchResults = $collection->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        
+        
         
         $paginatedSearchResults= new LengthAwarePaginator($currentPageSearchResults, count($collection), $perPage);
         $paginatedSearchResults->setPath($request->url());
@@ -387,7 +461,7 @@ class TicketController extends Controller
         //get id user assigned by
         $user_assigned_by=User::resolveId(); 
         //refresh object 
-        $ticket->fill(['expiration'=>$dayAfter]);
+        $ticket->fill(['expiration'=>$dayAfter, 'status_id'=>2]);
         //save
         $ticket->save();
         //created user assigned
@@ -400,6 +474,16 @@ class TicketController extends Controller
         UsersInvolvedTicket::create(['users_id'=>$request->user_assigned,
                                      'tickets_id'=>$ticket->id
                                     ]);
+        
+        $user_to=User::find($request->user_assigned);
+        $user_by=User::find($user_assigned_by);
+        $message= $user_by->name." reasigno el ticket a ". $user_to->name;
+        
+        Tracking::create(['tickets_id'=>$ticket->id,
+                          'message'=>$message,
+                          'users_id'=>$user_by->id,
+                          'verb_id'=> 8
+                        ]);
         
         return response(['mensaje'=>'Ticket Reasignado']);
     }
@@ -435,6 +519,28 @@ class TicketController extends Controller
         return response($ticket);
     }
     
+    public function ticketsAll(){
+        
+        $ticket=Ticket::with('subjects', 'status', 'ticketsAssignedUserBy','ticketsAssignedUserTo','person')->get();
+        return response($ticket);
+        
+    }
     
+    public function updateSubjects(Request $request){
+         
+	
+		if(isset($request->subjects_ids)){
+		    DB::select(
+    			DB::raw('Delete from tickets_subject where tickets_id='.$request->id)
+    		);
+    		
+            $subjects=$request->subjects_ids;
+            for($i=0;$i<count($subjects);$i++){
+                TicketSubject::create(['tickets_id'=>$request->id, 'subject_id'=>$subjects[$i]]);
+            }
+        }
+		
+		return response(['mensaje'=>'Actualizado Correctamente']);
+    }
     
 }
