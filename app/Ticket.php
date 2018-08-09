@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 /**
  * @property int $id
@@ -26,15 +28,15 @@ use Iatstuti\Database\Support\CascadeSoftDeletes;
  * @property Tracking[] $trackings
  * @property User[] $users
  */
-class Ticket extends Model
+class Ticket extends Model implements AuditableContract
 {
-    use SoftDeletes, CascadeSoftDeletes;
-    protected $cascadeDeletes =['person', 'priority', 'priority', 'status', 'files', 'notifications', 'threads', 'ticketsAssignedUser', 'subjects', 'trackings', 'users'];
+    use SoftDeletes, CascadeSoftDeletes, Auditable;
+    protected $cascadeDeletes =['person', 'priority', 'priority', 'status', 'files', 'notifications', 'threads', 'ticketsAssignedUser', 'subjects', 'trackings', 'users', 'linked_tikcket_id'];
     protected $dates = ['deleted_at'];
     /**
      * @var array
      */
-    protected $fillable = ['priority_id', 'status_id', 'person_id', 'settled', 'description', 'folios', 'days'];
+    protected $fillable = ['priority_id', 'status_id', 'person_id', 'settled', 'description', 'folios', 'expiration'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -65,7 +67,7 @@ class Ticket extends Model
      */
     public function files()
     {
-        return $this->hasMany('App\File', 'tickets_id');
+        return $this->hasMany('App\Files', 'tickets_id');
     }
 
     /**
@@ -73,7 +75,7 @@ class Ticket extends Model
      */
     public function notifications()
     {
-        return $this->hasMany('App\Notification', 'tickets_id');
+        return $this->hasMany('App\Notifications', 'tickets_id');
     }
 
     /**
@@ -87,10 +89,16 @@ class Ticket extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function ticketsAssignedUser()
+    public function ticketsAssignedUserBy()
     {
-        return $this->hasOne('App\TicketsAssignedUser', 'tickets_id');
+        return $this->belongsToMany('App\Users', 'tickets_assigned_users', 'tickets_id', 'assigned_by_id')->withTimestamps();
     }
+    
+    public function ticketsAssignedUserTo()
+    {
+        return $this->belongsToMany('App\Users', 'tickets_assigned_users', 'tickets_id', 'assigned_to_id')->withTimestamps();
+    }
+    
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -113,6 +121,13 @@ class Ticket extends Model
      */
     public function users()
     {
-        return $this->belongsToMany('App\User', 'users_involved_tickets', 'tickets_id', 'users_id');
+        return $this->belongsToMany('App\Users', 'users_involved_tickets', 'tickets_id', 'users_id');
     }
+    
+    
+    public function linkedTikcket()
+    {
+        return $this->belongsTo('App\Ticket', 'linked_tikcket_id');
+    }
+   
 }

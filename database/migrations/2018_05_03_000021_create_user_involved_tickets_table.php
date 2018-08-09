@@ -23,7 +23,7 @@ class CreateUserInvolvedTicketsTable extends Migration
         if (Schema::hasTable($this->set_schema_table)) return;
         Schema::create($this->set_schema_table, function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->increments('users_id')->unsigned();
+            $table->integer('users_id')->unsigned();
             $table->integer('tickets_id')->unsigned();
 
             //$table->index(["users_id"], 'fk_users_has_tickets_users1_idx');

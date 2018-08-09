@@ -72,4 +72,10 @@ class FieldController extends Controller
         $field->delete();
         return response(['mensaje'=>'Eliminado Correctamente']);
     }
+    
+    
+    public function fieldByName($id){
+        $field=Field::where('name_form_id', '=', $id)->get();
+        return response($field);
+    }
 }

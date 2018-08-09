@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Role;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Hash;
+use App\Users;
 
 class UserController extends Controller
 {
@@ -16,7 +19,14 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $users=Users::paginate(15);
+        return response($users);
+    }
+    
+    public function all()
+    {
+        $users=Users::with('roles','area')->get();
+        return response($users);
     }
 
     /**
@@ -27,7 +37,23 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
+        
+        $pass=Hash::make($request->password);
+        $area_id=$request->area['id'];
+        $user=Users::create(['name'=>$request->name,
+                      'email'=>$request->email,
+                      'password'=>$pass,
+                      'username'=>$request->username,
+                      'area_id'=>$area_id,
+                      'isActive'=> $request->isActive
+                    ]);
+        
+        
+        $role = Role::where('id', '=', $request->role)->first();
+        $user->attachRole($role);
+        return response(['Mensaje'=>'Creado Correctamente']);
+        
     }
 
     /**
@@ -38,7 +64,10 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $user=Users::find($id);
+        return response()->json($user);
+
+        
     }
 
     /**
@@ -50,7 +79,13 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user=User::find($id);
+        
+        $input = $request->all();
+        if(isset($input['password'])){$input['password'] = Hash::make($input['password']);}
+    	$user->fill($input);
+    	$user->save();
+		return response(["mensaje"=>"Actualizado correctamente"]);
     }
 
     /**
@@ -61,7 +96,10 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user=User::find($id);
+        $user->delete();
+
+        return response(["mensaje"=>"Eliminado correctamente"]);
     }
     
     public function auth(Request $request)
@@ -78,10 +116,30 @@ class UserController extends Controller
             return response()->json(['error' => 'Algo esta mal'],500);
         }
         
-        $userObj = JWTAuth::toUser($token);
+      $userObj = JWTAuth::toUser($token);
         
-        $user = User::where('username', '=', $userObj->username)->get();
-        return response()->json(compact('token','user'));
+    $user = Users::where('username', '=', $userObj->username)->with('roles', 'area')->get();
+    return response()->json(compact('token', 'user'));
         
+    }
+    
+    public function avatar(Request $request){
+        $user=User::resolveId();
+        $user=User::find($user);
+        $pathdel = public_path()."/".$user->avatar;
+        //$path = public_path().'/avatars/'.$user->id.'/';
+        if(isset($request->files) && count($request->files)>0){
+             if ($user->avatar && file_exists($pathdel)) {unlink($pathdel);}
+             $file = $request->file('file');
+             $fileName = $user->id.".".$file->getClientOriginalExtension();
+             $ruta='/avatars/'.$fileName;
+             $user->fill(['avatar'=>$ruta]);
+             $user->save();
+             \Storage::disk('local')->put($ruta,  \File::get($file));
+             
+        }
+        
+        return response(['mensaje'=>'Avatar Actualizado']);
+
     }
 }

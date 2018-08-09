@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 /**
  * @property int $id
@@ -12,13 +14,13 @@ use Iatstuti\Database\Support\CascadeSoftDeletes;
  * @property Field[] $fields
  * @property Form[] $forms
  */
-class NameForm extends Model
+class NameForm extends Model implements AuditableContract
 {
-    use SoftDeletes, CascadeSoftDeletes;
-    protected $cascadeDeletes =['fields', 'forms'];
+    use SoftDeletes, CascadeSoftDeletes, Auditable;
+    protected $cascadeDeletes =['fields', 'forms', 'area'];
     protected $dates = ['deleted_at'];
     /**
-     * The table associated with the model.
+     * The table associated with the extends Model.
      * 
      * @var string
      */
@@ -27,7 +29,15 @@ class NameForm extends Model
     /**
      * @var array
      */
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'area_id'];
+    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function area()
+    {
+        return $this->belongsTo('App\Area');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

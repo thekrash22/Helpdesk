@@ -1,0 +1,11 @@
+/***************ANDROID_HOME***************/
+export ANDROID_HOME=$HOME/Android/Sdk
+export PATH=$PATH:$ANDROID_HOME/tools
+
+/***************DOCKER UP*****************/
+export DOCKER_HOST=127.0.0.1
+sudo service docker start
+
+/***************Reset Docker**************/
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)

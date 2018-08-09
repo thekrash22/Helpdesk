@@ -5,6 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
+
 
 /**
  * @property int $id
@@ -15,13 +18,13 @@ use Iatstuti\Database\Support\CascadeSoftDeletes;
  * @property Notification[] $notifications
  * @property Subject[] $subjects
  */
-class Area extends Model
+class Area extends Model implements AuditableContract
 {
-    use SoftDeletes, CascadeSoftDeletes;
-    protected $cascadeDeletes =['forms', 'notifications', 'notifications_sender', 'subjects'];
+    use SoftDeletes, CascadeSoftDeletes, Auditable;
+    protected $cascadeDeletes =['name_form', 'notifications', 'notifications_sender', 'subjects'];
     protected $dates = ['deleted_at'];
     /**
-     * The table associated with the model.
+     * The table associated with the extends Model.
      * 
      * @var string
      */
@@ -35,9 +38,9 @@ class Area extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function forms()
+    public function name_form()
     {
-        return $this->hasMany('App\Form');
+        return $this->hasMany('App\NameForm');
     }
 
     /**
@@ -45,7 +48,7 @@ class Area extends Model
      */
     public function notifications()
     {
-        return $this->hasMany('App\Notification');
+        return $this->hasMany('App\Notifications');
     }
 
     /**
@@ -53,7 +56,7 @@ class Area extends Model
      */
     public function notifications_sender()
     {
-        return $this->hasMany('App\Notification', 'area_sender_id');
+        return $this->hasMany('App\Notifications', 'area_sender_id');
     }
 
     /**
@@ -63,4 +66,13 @@ class Area extends Model
     {
         return $this->hasMany('App\Subject');
     }
+
+    /**
+    * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    */
+    public function user()
+    {
+        return $this->hasMany('App\Users');
+    }
+    
 }

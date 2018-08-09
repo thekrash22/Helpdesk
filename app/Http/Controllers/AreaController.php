@@ -69,6 +69,7 @@ class AreaController extends Controller
     public function destroy($id)
     {
         $area=Area::find($id);
+        //dd($area);
         $area->delete();
         return response(['mensaje'=>'Eliminado Correctamente']);
     }

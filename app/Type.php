@@ -5,19 +5,21 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 /**
  * @property int $id
  * @property string $name
  * @property Notification[] $notifications
  */
-class Type extends Model
+class Type extends Model implements AuditableContract
 {
-    use SoftDeletes, CascadeSoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes, Auditable;
     protected $cascadeDeletes =['notifications'];
     protected $dates = ['deleted_at'];
     /**
-     * The table associated with the model.
+     * The table associated with the extends Model.
      * 
      * @var string
      */
@@ -33,6 +35,6 @@ class Type extends Model
      */
     public function notifications()
     {
-        return $this->hasMany('App\Notification');
+        return $this->hasMany('App\Notifications');
     }
 }

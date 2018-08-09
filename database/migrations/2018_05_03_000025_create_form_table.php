@@ -24,7 +24,6 @@ class CreateFormTable extends Migration
         Schema::create($this->set_schema_table, function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->integer('area_id')->unsigned();
             $table->integer('thread_id')->unsigned();
             $table->integer('name_form_id')->unsigned();
 
@@ -34,10 +33,6 @@ class CreateFormTable extends Migration
 
             //$table->index(["area_id"], 'fk_form_area1_idx');
 
-
-            $table->foreign('area_id')->references('id')->on('area')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
 
             $table->foreign('thread_id')->references('id')->on('thread')
                 ->onDelete('cascade')

@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 /**
  * @property int $id
@@ -21,7 +23,7 @@ use Iatstuti\Database\Support\CascadeSoftDeletes;
  * @property string $created_at
  * @property string $updated_at
  */
-class Audit extends Model
+class Audit extends Model implements AuditableContract
 {
     /**
      * @var array

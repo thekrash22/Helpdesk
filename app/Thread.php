@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Iatstuti\Database\Support\CascadeSoftDeletes;
+use OwenIt\Auditing\Auditable;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 /**
  * @property int $id
@@ -16,13 +18,13 @@ use Iatstuti\Database\Support\CascadeSoftDeletes;
  * @property File[] $files
  * @property Form[] $forms
  */
-class Thread extends Model
+class Thread extends Model implements AuditableContract
 {
-    use SoftDeletes, CascadeSoftDeletes;
+    use SoftDeletes, CascadeSoftDeletes, Auditable;
     protected $cascadeDeletes =['user', 'tickets', 'files', 'forms'];
     protected $dates = ['deleted_at'];
     /**
-     * The table associated with the model.
+     * The table associated with the extends Model.
      * 
      * @var string
      */
@@ -46,7 +48,7 @@ class Thread extends Model
      */
     public function user()
     {
-        return $this->belongsTo('App\User', 'users_id');
+        return $this->belongsTo('App\Users', 'users_id');
     }
 
     /**
@@ -54,7 +56,7 @@ class Thread extends Model
      */
     public function files()
     {
-        return $this->hasMany('App\File');
+        return $this->hasMany('App\Files');
     }
 
     /**

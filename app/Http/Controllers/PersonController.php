@@ -15,6 +15,12 @@ class PersonController extends Controller
      */
     public function index()
     {
+        $person=Person::paginate(15);
+        return response($person);
+    }
+    
+    public function all()
+    {
         $person=Person::all();
         return response($person);
     }
@@ -71,5 +77,13 @@ class PersonController extends Controller
         $person=Person::find($id);
         $person->delete();
         return response(['mensaje'=>'Eliminado Correctamente']);
+    }
+    
+    
+    public function searchByDNI($type, $dni){
+        $person=Person::where('dinType_id', '=' , $type)
+                      ->where('dni', 'like', '%'.$dni.'%')
+                      ->get();
+        return response($person);
     }
 }

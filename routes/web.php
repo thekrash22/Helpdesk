@@ -14,3 +14,7 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('test', function () {
+    event(new App\Events\StatusLiked('Porno'));
+    return "Event has been sent!";
+});

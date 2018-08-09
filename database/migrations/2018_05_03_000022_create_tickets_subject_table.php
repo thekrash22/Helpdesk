@@ -21,10 +21,10 @@ class CreateTicketsSubjectTable extends Migration
     public function up()
     {
         if (Schema::hasTable($this->set_schema_table)) return;
-        Schema::create($this->set_schema_table, function (Blueprint $table) {
+            Schema::create($this->set_schema_table, function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->integer('tickets_id')->unsigned();
-            $table->increments('subject_id')->unsigned();
+            $table->integer('subject_id')->unsigned();
 
             //$table->index(["subject_id"], 'fk_tickets_has_subject_subject1_idx');
 
