@@ -44,7 +44,7 @@ class TicketAssignedUser extends Model implements AuditableContract
      */
     public function user_assigend_by()
     {
-        return $this->belongsTo('App\User', 'assigned_by_id');
+        return $this->belongsTo('App\Users', 'assigned_by_id')->withTimestamps();
     }
 
     /**
@@ -52,7 +52,7 @@ class TicketAssignedUser extends Model implements AuditableContract
      */
     public function user_assigend_to()
     {
-        return $this->belongsTo('App\User', 'assigned_to_id');
+        return $this->belongsTo('App\Users', 'assigned_to_id')->withTimestamps();
     }
 
     /**

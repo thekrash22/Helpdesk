@@ -48,7 +48,7 @@ class Thread extends Model implements AuditableContract
      */
     public function user()
     {
-        return $this->belongsTo('App\User', 'users_id');
+        return $this->belongsTo('App\Users', 'users_id');
     }
 
     /**

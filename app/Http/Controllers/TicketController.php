@@ -82,7 +82,7 @@ class TicketController extends Controller
             }
         }
         //validation of files, and upload to server whit ticket_id on public directory
-        if(isset($request->files)){
+        if(isset($request->files) && count($request->files)>0){
              $path = public_path().'/docs/tickets/'.$ticket->id.'/';
              $files = $request->file('files');
              foreach ($files as $file) {
@@ -161,11 +161,16 @@ class TicketController extends Controller
         $ticket=Ticket::with([
                         'subjects', 
                         'status', 
-                        'ticketsAssignedUserBy', 
+                        'ticketsAssignedUserBy'=> function($ticketsAssignedUserBy){
+                            $ticketsAssignedUserBy->orderBy('tickets_assigned_users.created_at', 'DESC')
+                                                  ->with('area', 'roles')
+                                                  ->get();
+                                                 
+                        }, 
                         'ticketsAssignedUserTo'=> function($ticketsAssignedUserTo){
-                            $ticketsAssignedUserTo->with('area', 'roles')
-                            ->orderBy('created_at', 'asc')
-                            ->get();
+                            $ticketsAssignedUserTo->orderBy('tickets_assigned_users.created_at', 'DESC')
+                                                  ->with('area', 'roles')
+                                                  ->get();
                         }, 
                         'person', 
                         'priority', 
@@ -173,7 +178,10 @@ class TicketController extends Controller
                         'linkedTikcket',
                         'trackings',
                         'threads'=>function($threads){
-                            $threads->with(['files','user',
+                            $threads->with(['files',
+                                            'user'=>function($user){
+                                                $user->with('area', 'roles')->get();
+                                            },
                                             'forms'=>function($forms){
                                                 $forms->with(['nameForm',
                                                               'formFields'=>function($formFields){
@@ -541,6 +549,30 @@ class TicketController extends Controller
         }
 		
 		return response(['mensaje'=>'Actualizado Correctamente']);
+    }
+    
+    public function myTicketsAll(Request $request){
+        
+        $user_id=User::resolveId();
+        $roles_id = $request->roles_id;
+        $user_assigned_by = $request->user_assigned_by;
+        $month = $request->month;
+        $year = '';
+        if(isset($request->month)){
+            $hoy = Carbon::now();
+            $year = $hoy->year;
+        }
+        //call to procedure on bd, this return values according by filters 
+        $ticket=DB::select('Call myTicketsByFilters(?, ?, ?, ?, ?)', array($roles_id, $user_id, $month, $year, $user_assigned_by));
+        $tickets=[];
+        foreach($ticket as $tick){
+            $aux=Ticket::with('subjects', 'status', 'ticketsAssignedUserBy', 'ticketsAssignedUserTo', 'person')->find($tick->id);
+            $tickets[]=$aux;
+        }
+       
+       
+        
+        return response($tickets);
     }
     
 }

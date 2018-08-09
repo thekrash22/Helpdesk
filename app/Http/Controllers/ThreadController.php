@@ -82,7 +82,7 @@ class ThreadController extends Controller
         }
       
         //create relationship of form-fields
-    /*
+/*
         foreach($fields as $field){
            FormField::create(['form_id'=>$form->id, 
                               'field_id'=> $field['id'],
@@ -91,8 +91,8 @@ class ThreadController extends Controller
         }*/
         
         //load file of thread 
-        if(isset($request->files)){
-             $path = public_path().'/docs/thread/'.$thread->id.'/';
+        if(isset($request->files) && count($request->files)>0){
+             //$path = public_path().'/docs/thread/'.$thread->id.'/';
              $files = $request->file('files');
              foreach ($files as $file) {
                   $fileName = $file->getClientOriginalName();

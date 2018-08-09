@@ -33,6 +33,7 @@ Route::group(['middleware' => 'cors'],function(){
         Route::resource('verb', 'VerbController');//
         Route::get('ticketsAll', 'TicketController@ticketsAll');
         Route::post('updateSubjects','TicketController@updateSubjects');
+        Route::post('avatar', 'UserController@avatar');
         
         Route::get('area', ['middleware'=>['ability:readlist-area'],'uses'=>'AreaController@index']);
         Route::get('area/{area}', ['middleware'=>['ability:read-area'],'uses'=>'AreaController@show']);
@@ -110,6 +111,7 @@ Route::group(['middleware' => 'cors'],function(){
        
         Route::post('ticketByFilters', 'TicketController@ticketByFilters');
         Route::post('myTicketsByFilters', 'TicketController@myTicketsByFilters');
+        Route::post('myTicketsAll', 'TicketController@myTicketsAll');
         Route::post('ticketReasinged', 'TicketController@ticketReasinged');
         Route::post('consolidated', ['middleware'=>['ability:all-consolidado'],'uses'=>'TicketController@consolidated']);
         Route::post('actuationsTickets', ['middleware'=>['ability:actuations-tickets'],'uses'=>'TicketController@actuationsTickets']);

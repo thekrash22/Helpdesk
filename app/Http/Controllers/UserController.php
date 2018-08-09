@@ -122,4 +122,24 @@ class UserController extends Controller
     return response()->json(compact('token', 'user'));
         
     }
+    
+    public function avatar(Request $request){
+        $user=User::resolveId();
+        $user=User::find($user);
+        $pathdel = public_path()."/".$user->avatar;
+        //$path = public_path().'/avatars/'.$user->id.'/';
+        if(isset($request->files) && count($request->files)>0){
+             if ($user->avatar && file_exists($pathdel)) {unlink($pathdel);}
+             $file = $request->file('file');
+             $fileName = $user->id.".".$file->getClientOriginalExtension();
+             $ruta='/avatars/'.$fileName;
+             $user->fill(['avatar'=>$ruta]);
+             $user->save();
+             \Storage::disk('local')->put($ruta,  \File::get($file));
+             
+        }
+        
+        return response(['mensaje'=>'Avatar Actualizado']);
+
+    }
 }

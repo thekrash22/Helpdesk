@@ -66,5 +66,13 @@ class Area extends Model implements AuditableContract
     {
         return $this->hasMany('App\Subject');
     }
+
+    /**
+    * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    */
+    public function user()
+    {
+        return $this->hasMany('App\Users');
+    }
     
 }

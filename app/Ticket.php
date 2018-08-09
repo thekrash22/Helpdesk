@@ -91,12 +91,12 @@ class Ticket extends Model implements AuditableContract
      */
     public function ticketsAssignedUserBy()
     {
-        return $this->belongsToMany('App\Users', 'tickets_assigned_users', 'tickets_id', 'assigned_by_id')->latest();
+        return $this->belongsToMany('App\Users', 'tickets_assigned_users', 'tickets_id', 'assigned_by_id')->withTimestamps();
     }
     
     public function ticketsAssignedUserTo()
     {
-        return $this->belongsToMany('App\Users', 'tickets_assigned_users', 'tickets_id', 'assigned_to_id')->latest();
+        return $this->belongsToMany('App\Users', 'tickets_assigned_users', 'tickets_id', 'assigned_to_id')->withTimestamps();
     }
     
 
@@ -121,7 +121,7 @@ class Ticket extends Model implements AuditableContract
      */
     public function users()
     {
-        return $this->belongsToMany('App\User', 'users_involved_tickets', 'tickets_id', 'users_id');
+        return $this->belongsToMany('App\Users', 'users_involved_tickets', 'tickets_id', 'users_id');
     }
     
     
